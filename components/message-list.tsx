@@ -38,7 +38,7 @@ const MessageList = ({ isLoading, messages }: Props) => {
               )}
             >
               <p
-                className={cn("prose", {
+                className={cn("prose whitespace-pre-wrap text-sm", {
                   "text-white": message.role === "user",
                 })}
               >
