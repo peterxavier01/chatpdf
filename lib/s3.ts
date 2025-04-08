@@ -1,46 +1,55 @@
-import AWS from "aws-sdk"
+import { S3 } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 
 export async function uploadToS3(file: File) {
-    try {
-        AWS.config.update({
-            accessKeyId: process.env.NEXT_PUBLIC_S3_ACCESS_KEY_ID,
-            secretAccessKey: process.env.NEXT_PUBLIC_S3_SECRET_ACCESS_KEY
-        })
+  try {
+    const s3 = new S3({
+      region: "eu-west-2",
+      credentials: {
+        accessKeyId: process.env.NEXT_PUBLIC_S3_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.NEXT_PUBLIC_S3_SECRET_ACCESS_KEY!,
+      },
+    });
 
-        const s3 = new AWS.S3({
-            params: {
-                Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME
-            },
-            region: 'eu-west-2'
-        })
+    const file_key =
+      "uploads/" + Date.now().toString() + file.name.replace(" ", "-");
 
-        const file_key = 'uploads/' + Date.now().toString() + file.name.replace(' ', '-')
+    const params = {
+      Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME!,
+      Key: file_key,
+      Body: file,
+    };
 
-        const params = {
-            Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME!,
-            Key: file_key,
-            Body: file
-        }
+    // Using the Upload class from lib-storage for progress tracking
+    const upload = new Upload({
+      client: s3,
+      params: params,
+    });
 
-        const upload = s3.putObject(params).on('httpUploadProgress', evt => {
-            console.log("Uploading to s3..." + parseInt(((evt.loaded * 100) / evt.total).toString() + '%'))
-        }).promise()
+    // Add progress tracking
+    upload.on("httpUploadProgress", (evt) => {
+      console.log(
+        "Uploading to s3..." +
+          parseInt(((evt.loaded! * 100) / evt.total!).toString()) +
+          "%"
+      );
+    });
 
-        await upload.then(() => {
-            console.log("Successfully uploaded to S3!", file_key)
-        })
+    // Wait for the upload to complete
+    await upload.done();
+    console.log("Successfully uploaded to S3!", file_key);
 
-        return Promise.resolve({
-            file_key,
-            file_name: file.name
-        })
-
-    } catch (error) {
-        console.log("UPLOAD ERROR:", error)
-    }
+    return {
+      file_key,
+      file_name: file.name,
+    };
+  } catch (error) {
+    console.log("UPLOAD ERROR:", error);
+    throw error; // Re-throw to allow caller to handle
+  }
 }
 
 export function getS3Url(file_key: string) {
-    const url = `https://${process.env.NEXT_PUBLIC_S3_BUCKET_NAME}.s3.eu-west-2.amazonaws.com/${file_key}`
-    return url
+  const url = `https://${process.env.NEXT_PUBLIC_S3_BUCKET_NAME}.s3.eu-west-2.amazonaws.com/${file_key}`;
+  return url;
 }
