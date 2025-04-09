@@ -1,3 +1,5 @@
+import dompurify from "dompurify";
+import { Marked } from "marked";
 import { Message } from "@ai-sdk/react";
 import { Loader2 } from "lucide-react";
 
@@ -9,6 +11,11 @@ type Props = {
 };
 
 const MessageList = ({ isLoading, messages }: Props) => {
+  const marked = new Marked();
+  const parsedContent = (content: string) => {
+    return dompurify.sanitize(marked.parse(content) as string);
+  };
+
   if (isLoading) {
     return (
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -19,31 +26,33 @@ const MessageList = ({ isLoading, messages }: Props) => {
   if (!messages) return <></>;
 
   return (
-    <div className="flex flex-col gap-2 px-4">
+    <div className="flex flex-col gap-2 p-4">
       {messages.map((message) => {
         return (
           <div
             key={message.id}
             className={cn("flex", {
               "justify-end pl-10": message.role === "user",
-              "justify-start pr-10": message.role === "assistant",
+              "justify-start": message.role === "assistant",
             })}
           >
             <div
-              className={cn(
-                "rounded-lg px-3 text-sm py-1 shadow-md ring-1 ring-gray-900",
-                {
-                  "bg-blue-600 text-white": message.role === "user",
-                }
-              )}
+              className={cn("rounded-lg px-3 text-sm py-1", {
+                "bg-blue-600 text-white shadow-md ring-1 ring-gray-900":
+                  message.role === "user",
+              })}
             >
               <p
-                className={cn("prose whitespace-pre-wrap text-sm", {
-                  "text-white": message.role === "user",
-                })}
-              >
-                {message.content}
-              </p>
+                className={cn(
+                  "prose whitespace-pre-wrap text-sm font-poppins",
+                  {
+                    "text-white": message.role === "user",
+                  }
+                )}
+                dangerouslySetInnerHTML={{
+                  __html: parsedContent(message.content),
+                }}
+              />
             </div>
           </div>
         );
