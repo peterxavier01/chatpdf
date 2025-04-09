@@ -3,11 +3,17 @@
 import { useState } from "react";
 import axios from "axios";
 
-import { Button } from "./ui/button";
+import { Button, ButtonProps } from "./ui/button";
+import { LucideArrowUpRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-type Props = { isPro: boolean };
+type Props = {
+  isPro: boolean;
+  className?: string;
+  variant?: ButtonProps["variant"];
+};
 
-const SubscriptionBtn = ({ isPro }: Props) => {
+const SubscriptionBtn = ({ isPro, className, variant = "coral" }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const handleSubscription = async () => {
@@ -23,8 +29,14 @@ const SubscriptionBtn = ({ isPro }: Props) => {
   };
 
   return (
-    <Button onClick={handleSubscription} disabled={loading}>
+    <Button
+      variant={variant}
+      onClick={handleSubscription}
+      className={cn("w-full max-w-80", className)}
+      disabled={loading}
+    >
       {isPro ? "Manage Subscriptions" : "Get Pro"}
+      <LucideArrowUpRight />
     </Button>
   );
 };
