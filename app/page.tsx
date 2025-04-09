@@ -1,6 +1,6 @@
 import { UserButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
-import { ArrowRight, LogIn } from "lucide-react";
+import { LogIn } from "lucide-react";
 import Link from "next/link";
 import { eq } from "drizzle-orm";
 
@@ -27,31 +27,33 @@ export default async function Home() {
   }
 
   return (
-    <div className="w-screen min-h-screen bg-gradient-to-r from-rose-100 to-teal-100">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <div className="min-h-screen h-full bg-gradient-to-b from-off-white to-celestial-blue font-poppins px-4 py-8">
+      <div className="pt-4 pr-4 flex items-center justify-end mb-4 md:mb-0">
+        <UserButton />
+      </div>
+
+      <div className="flex flex-col md:min-h-[calc(100vh-7rem)] justify-center items-center">
         <div className="flex flex-col items-center text-center">
           <div className="flex items-center">
-            <h1 className="mr-3 text-5xl font-semibold">Chat with any PDF</h1>
-            <UserButton />
+            <h1 className="mr-3 text-4xl md:text-5xl lg:text-7xl font-extrabold text-rich-black md:mb-4">
+              <span className="text-celestial-blue">Chat</span> with your PDFs
+            </h1>
           </div>
 
-          <div className="flex mt-4">
+          <div className="flex mt-4 max-sm:flex-wrap gap-y-4">
             {isAuth && firstChat && (
-              <Button asChild>
-                <Link href={`/chat/${firstChat.id}`}>
-                  Go to Chats
-                  <ArrowRight className="ml-2" />
-                </Link>
+              <Button variant="coral" asChild className="w-full max-w-80">
+                <Link href={`/chat/${firstChat.id}`}>Go to Chats</Link>
               </Button>
             )}
-            <div className="ml-3">
+            <div className="md:ml-3 w-full">
               <SubscriptionBtn isPro={isPro} />
             </div>
           </div>
 
-          <p className="max-w-xl mt-4 text-lg text-slate-600">
-            Join millions of students, researchers and professionals answer
-            questions and understand research with AI
+          <p className="max-w-xl mt-4 text-lg text-slate-700">
+            Join millions using AI to get instant answers and insights from
+            research.
           </p>
 
           <div className="w-full mt-4">
