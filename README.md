@@ -18,8 +18,13 @@ A smart, AI-powered web application designed to interact with your PDFs seamless
 - **Styling:** Tailwind CSS
 - **Vector Database:** Pinecone DB
 - **Carousel:** Langchain
+- **Postgres Database:** Neon DB
+- **Authentication:** Clerk
 - **AI Integration:** OpenAI API
 - **File Storage:** AWS S3
+- **File Upload:** React Dropzone
+- **Payment Provider:** Stripe
+- **State Management:** Zustand
 
 ## Screenshots
 
