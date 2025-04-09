@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { MessageCircle, PlusCircle } from "lucide-react";
+import { MessageSquare, PlusCircle, Sidebar, SidebarClose } from "lucide-react";
 
 import { Button } from "./ui/button";
 import SubscriptionBtn from "./subscription-btn";
 
 import { DrizzleChat } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
+import useSidebarStore from "@/hooks/useSidebarStore";
 
 type Props = {
   chats: DrizzleChat[];
@@ -16,12 +17,33 @@ type Props = {
 };
 
 const ChatSidebar = ({ chats, chatId, isPro }: Props) => {
+  const { isOpen, onOpen, onClose } = useSidebarStore();
   return (
-    <div className="w-full h-screen p-4 text-gray-200 bg-gray-900">
+    <div
+      className={cn(
+        "w-full h-screen relative overflow-y-auto p-4 text-gray-200 bg-rich-black font-poppins transition-all duration-300 ease-in-out",
+        {
+          "max-w-72": isOpen,
+          "max-w-20": !isOpen,
+        }
+      )}
+    >
+      <div
+        className={cn("w-full min-h-10", {
+          "flex justify-center transition-all duration-300": !isOpen,
+        })}
+      >
+        {isOpen ? (
+          <SidebarClose onClick={onClose} className="cursor-pointer" />
+        ) : (
+          <Sidebar onClick={onOpen} className="cursor-pointer" />
+        )}
+      </div>
+
       <Link href="/">
         <Button className="w-full border border-white border-dashed">
-          <PlusCircle className="mr-2 size-4" />
-          New Chat
+          <PlusCircle className={cn("size-4", isOpen ? "mr-2" : "")} />
+          {isOpen ? "New Chat" : ""}
         </Button>
       </Link>
 
@@ -30,11 +52,11 @@ const ChatSidebar = ({ chats, chatId, isPro }: Props) => {
           <Link key={chat.id} href={`/chat/${chat.id}`}>
             <div
               className={cn("rounded-lg p-3 text-slate-300 flex items-center", {
-                "bg-blue-500 text-white": chat.id === chatId,
+                "bg-celestial-blue text-white": chat.id === chatId,
                 "hover:text-white": chat.id === chatId,
               })}
             >
-              <MessageCircle className="mr-2" />
+              <MessageSquare className="mr-2 flex-shrink-0" />
               <p className="w-full overflow-hidden text-sm truncate whitespace-nowrap text-ellipsis">
                 {chat.pdfName}
               </p>
@@ -43,13 +65,20 @@ const ChatSidebar = ({ chats, chatId, isPro }: Props) => {
         ))}
       </div>
 
-      <div className="absolute bottom-0 left-4">
-        <div className="flex items-center gap-2 text-sm text-slate-500 flex-wrap">
+      <div
+        className={cn(
+          "absolute bottom-0 inset-x-0 px-4 mb-4",
+          !isOpen ? "invisible" : ""
+        )}
+      >
+        <div className="text-sm text-slate-500 mb-4">
           <Link href="/">Home</Link>
-          <Link href="/">Source</Link>
         </div>
-
-        <SubscriptionBtn isPro={isPro} />
+        <SubscriptionBtn
+          variant="accent"
+          className="!max-w-full"
+          isPro={isPro}
+        />
       </div>
     </div>
   );

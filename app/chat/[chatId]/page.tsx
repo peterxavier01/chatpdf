@@ -32,15 +32,15 @@ export default async function ChatPage({ params }: Props) {
   const currentChat = _chats.find((chat) => chat.id === parseInt(chatId));
 
   return (
-    <div className="flex max-h-screen overflow-scroll overflow-x-hidden">
-      <div className="flex w-full max-h-screen overflow-scroll overflow-x-hidden">
+    <div className="flex max-h-screen overflow-hidden">
+      <div className="flex w-full max-h-screen overflow-hidden">
         {/** chat sidebar */}
         <div className="flex-1 max-w-xs">
           <ChatSidebar chats={_chats} chatId={parseInt(chatId)} isPro={isPro} />
         </div>
 
         {/** pdf viewer */}
-        <div className="max-h-screen p-4 overflow-scroll overflow-x-hidden flex-[5]">
+        <div className="max-h-screen p-4 overflow-hidden flex-[5]">
           <PDFViewer pdf_url={currentChat?.pdfUrl || ""} />
         </div>
 

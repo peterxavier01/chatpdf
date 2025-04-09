@@ -82,13 +82,13 @@ const FileUpload = () => {
           <>
             <Loader2 className="size-10 text-blue-500 animate-spin" />
             <p className="mt-2 text-sm text-slate-400">
-              Spilling tea to GPT...
+              Embedding document...
             </p>
           </>
         ) : (
           <>
             <Inbox className="size-10 text-blue-500" />
-            <p>Drop PDF Here</p>
+            <p>Drag and drop or choose your file.</p>
           </>
         )}
       </div>
