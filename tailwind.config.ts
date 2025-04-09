@@ -11,7 +11,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        poppins: "var(--font-poppins)",
+      },
       colors: {
+        coral: "#ff6666",
+        "rich-black": "#01161e",
+        "off-white": "#e7e7e7",
+        "celestial-blue": "#357DED",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
